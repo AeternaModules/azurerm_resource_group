@@ -15,14 +15,6 @@ EOT
     managed_by = optional(string)
     tags       = optional(map(string))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.resource_groups : (
-        v.managed_by == null || (length(v.managed_by) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_resource_group's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -57,5 +49,8 @@ EOT
   #   condition: length(value) <= 256
   #   message:   [from tags.Validate: invalid when len(value) > 256]
   #   source:    [from tags.Validate: invalid when len(value) > 256]
+  # path: managed_by
+  #   condition: length(value) > 0
+  #   message:   must not be empty
 }
 
